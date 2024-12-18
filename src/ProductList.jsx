@@ -254,13 +254,34 @@ function ProductList() {
         setShowCart(false);
     };
 
-    const handleAddToCart = (product) => {
-        dispatch(addItem(product));
+    const handleRemoveItem = (product) => {
         setAddedToCart((prevState) => ({
             ...prevState,
-            [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
+            [product.name]: false, 
         }));
     };
+
+    const handleAddToCart = (product) => {
+        if (!isAddedToCart(product)) {
+            dispatch(addItem(product));
+            setAddedToCart((prevState) => ({
+                ...prevState,
+                [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
+            }));
+        }
+    };
+
+    const isAddedToCart = (plant) => {
+        console.log(addedToCart);
+        console.log(plant);
+        console.log(addedToCart[plant.name]);
+        if (addedToCart[plant.name]) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -292,7 +313,7 @@ function ProductList() {
                                         <img className="product-image" src={plant.image} alt={plant.name} />
                                         <div className="product-title">{plant.name}</div>
                                         {/*Similarly like the above plant.name show other details like description and cost*/}
-                                        <button className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                        <button className={isAddedToCart(plant) ? 'product-button added-to-cart' : 'product-button'} onClick={() => handleAddToCart(plant)}>Add to Cart</button>
                                     </div>
                                 ))}
                             </div>
@@ -300,7 +321,7 @@ function ProductList() {
                     ))}
                 </div>
             ) : (
-                <CartItem onContinueShopping={handleContinueShopping} />
+                <CartItem onContinueShopping={handleContinueShopping} onRemoveItem={handleRemoveItem} />
             )}
         </div>
     );
